@@ -18,15 +18,9 @@ Desktop browser built with Electron, featuring a beautiful macOS-inspired UI wit
 ## Downloads
 
 ### Windows
-- [Aurora Browser Setup 1.0.0.exe](https://github.com/Allex863/aurora-browser/releases/latest) - Installer
 - [Aurora Browser 1.0.0.exe](https://github.com/Allex863/aurora-browser/releases/latest) - Portable
 
 ## Installation
-
-### From Installer
-1. Download `Aurora Browser Setup 1.0.0.exe`
-2. Run the installer
-3. Launch Aurora Browser
 
 ### Portable Version
 1. Download `Aurora Browser 1.0.0.exe`
