@@ -1,0 +1,60 @@
+{
+  "name": "aurora-browser",
+  "version": "1.0.0",
+  "description": "Aurora Browser — desktop browser in macOS style with dark theme support",
+  "main": "src/main.js",
+  "author": "Allex863",
+  "license": "MIT",
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Allex863/aurora-browser"
+  },
+  "scripts": {
+    "start": "electron .",
+    "start:dev": "electron . --dev",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "dist:win": "electron-builder --win"
+  },
+  "devDependencies": {
+    "electron": "^32.2.1",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.aurora.browser",
+    "productName": "Aurora Browser",
+    "artifactName": "${productName}-${version}-${arch}.${ext}",
+    "files": [
+      "src/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "buildResources": "assets",
+      "output": "release"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "Allex863",
+      "repo": "aurora-browser"
+    }
+  }
+}

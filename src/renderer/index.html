@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>macOS Browser Desktop</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app" data-theme="dark">
+      <header class="titlebar" role="banner">
+        <div class="window-controls" aria-label="Кнопки окна">
+          <button class="dot dot--close no-drag" id="winClose" type="button" aria-label="Закрыть"></button>
+          <button class="dot dot--min no-drag" id="winMin" type="button" aria-label="Свернуть"></button>
+          <button class="dot dot--zoom no-drag" id="winMax" type="button" aria-label="Развернуть"></button>
+        </div>
+
+        <nav class="toolbar" aria-label="Панель инструментов">
+          <div class="nav-buttons no-drag" role="group" aria-label="Навигация">
+            <button class="icon-btn" id="backBtn" type="button" aria-label="Назад" title="Назад">
+              <span aria-hidden="true">←</span>
+            </button>
+            <button class="icon-btn" id="forwardBtn" type="button" aria-label="Вперёд" title="Вперёд">
+              <span aria-hidden="true">→</span>
+            </button>
+            <button class="icon-btn" id="homeBtn" type="button" aria-label="Домой" title="Домой">
+              <span aria-hidden="true">⌂</span>
+            </button>
+            <button class="icon-btn" id="reloadBtn" type="button" aria-label="Обновить" title="Обновить">
+              <span aria-hidden="true">↻</span>
+            </button>
+          </div>
+
+          <form class="omnibox no-drag" id="omniboxForm" autocomplete="off" aria-label="Адресная строка">
+            <span class="omnibox__icon" aria-hidden="true">⌘</span>
+            <input
+              id="urlInput"
+              name="url"
+              type="text"
+              inputmode="url"
+              spellcheck="false"
+              aria-label="Введите адрес или запрос"
+              placeholder="Введите адрес или запрос"
+            />
+            <button class="pill-btn" id="themeBtn" type="button" aria-label="Переключить тему" title="Тема">
+              <span aria-hidden="true">☼</span>
+            </button>
+          </form>
+
+          <div class="toolbar-actions no-drag" role="group" aria-label="Действия">
+            <button class="icon-btn" id="downloadsBtn" type="button" aria-label="Загрузки" title="Загрузки">
+              <span aria-hidden="true">↓</span>
+            </button>
+            <button class="icon-btn" id="settingsBtn" type="button" aria-label="Настройки" title="Настройки">
+              <span aria-hidden="true">⚙</span>
+            </button>
+            <button class="icon-btn" id="newTabBtn" type="button" aria-label="Новая вкладка" title="Новая вкладка">
+              <span aria-hidden="true">＋</span>
+            </button>
+          </div>
+        </nav>
+      </header>
+
+      <section class="tabs" aria-label="Вкладки">
+        <div class="tabs__strip" id="tabsStrip" role="tablist" aria-label="Список вкладок"></div>
+      </section>
+
+      <main class="content" role="main">
+        <div class="content__topline" aria-hidden="true"></div>
+
+        <section class="viewport" aria-label="Просмотр страницы">
+          <div class="viewport__overlay" id="overlay">
+            <div class="overlay-card">
+              <div class="overlay-title">Загрузка…</div>
+              <div class="overlay-text" id="overlayText">Открываем страницу</div>
+              <div class="overlay-actions">
+                <button class="primary no-drag" id="openExternalBtn" type="button">Открыть в браузере</button>
+                <button class="ghost no-drag" id="copyLinkBtn" type="button">Скопировать ссылку</button>
+              </div>
+            </div>
+          </div>
+          <div class="viewport__host" id="viewHost"></div>
+          <div class="downloads" id="downloads" aria-label="Загрузки"></div>
+        </section>
+      </main>
+    </div>
+
+    <div class="modal" id="downloadsModal" aria-hidden="true">
+      <div class="modal__backdrop"></div>
+      <div class="modal__card" role="dialog" aria-modal="true" aria-label="Менеджер загрузок">
+        <div class="modal__title">Загрузки</div>
+        <div class="dl-list" id="downloadsList" aria-label="Список загрузок"></div>
+        <div class="modal__actions">
+          <button class="ghost no-drag" id="downloadsCloseBtn" type="button">Закрыть</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="searchModal" aria-hidden="true">
+      <div class="modal__backdrop"></div>
+      <div class="modal__card" role="dialog" aria-modal="true" aria-label="Поиск Aurora">
+        <div class="modal__title">Поиск</div>
+        <div class="dl-list" id="searchList" aria-label="Результаты поиска"></div>
+        <div class="modal__actions">
+          <button class="ghost no-drag" id="searchCloseBtn" type="button">Закрыть</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="settingsModal" aria-hidden="true">
+      <div class="modal__backdrop"></div>
+      <div class="modal__card" role="dialog" aria-modal="true" aria-label="Настройки браузера">
+        <div class="modal__title">Настройки</div>
+        <div class="modal__grid">
+          <label class="field">
+            <div class="field__label">Домашняя страница</div>
+            <input class="field__input" id="homeInput" type="text" spellcheck="false" placeholder="about:blank (домашняя)" />
+          </label>
+
+          <label class="field">
+            <div class="field__label">Поисковик</div>
+            <select class="field__input" id="searchSelect">
+              <option value="google">Google</option>
+              <option value="yandex">Yandex</option>
+            </select>
+          </label>
+
+          <div class="field">
+            <div class="field__label">Папка загрузок</div>
+            <div class="field__row">
+              <input class="field__input" id="downloadDirInput" type="text" readonly />
+              <button class="icon-btn" id="chooseDownloadDirBtn" type="button">Выбрать</button>
+            </div>
+          </div>
+
+          <label class="field">
+            <div class="field__label">При запуске</div>
+            <div class="toggle">
+              <input id="restoreSessionToggle" type="checkbox" />
+              <span>Восстанавливать вкладки</span>
+            </div>
+          </label>
+        </div>
+
+        <div class="modal__actions">
+          <button class="ghost no-drag" id="settingsCancelBtn" type="button">Закрыть</button>
+          <button class="primary no-drag" id="settingsSaveBtn" type="button">Сохранить</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

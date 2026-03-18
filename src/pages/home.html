@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aurora Browser</title>
+    <style>
+      :root{
+        --bg:#0b0e14;
+        --card: rgba(18,22,30,.56);
+        --stroke: rgba(255,255,255,.12);
+        --text:#e8eefc;
+        --muted: rgba(232,238,252,.62);
+        --accent:#0a84ff;
+        --shadow: 0 24px 70px rgba(0,0,0,.55);
+        --blur: 18px;
+        --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans";
+        --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      }
+      *{box-sizing:border-box;}
+      html,body{height:100%;}
+      body{
+        margin:0;
+        font-family: var(--sans);
+        color: var(--text);
+        background:
+          radial-gradient(1200px 560px at 18% 12%, rgba(10,132,255,.22), transparent 60%),
+          radial-gradient(900px 420px at 80% 0%, rgba(255,95,87,.12), transparent 55%),
+          radial-gradient(900px 520px at 72% 92%, rgba(40,200,64,.10), transparent 62%),
+          var(--bg);
+        display:grid;
+        place-items:center;
+        padding: 28px;
+      }
+      .wrap{
+        width: min(880px, 100%);
+        display:flex;
+        flex-direction:column;
+        gap: 16px;
+        align-items:center;
+      }
+      .logo{
+        display:flex;
+        align-items:center;
+        gap: 10px;
+        user-select:none;
+      }
+      .mark{
+        width: 34px;
+        height: 34px;
+        border-radius: 12px;
+        background: linear-gradient(180deg, rgba(10,132,255,.92), rgba(10,132,255,.62));
+        box-shadow: 0 16px 30px rgba(10,132,255,.20);
+        display:grid;
+        place-items:center;
+        font-family: var(--mono);
+        font-weight: 800;
+      }
+      .name{
+        font-weight: 800;
+        letter-spacing: .3px;
+        font-size: 22px;
+      }
+      .sub{
+        color: var(--muted);
+        font-size: 13px;
+        margin-top: 2px;
+        text-align:center;
+      }
+      .search{
+        width: min(680px, 100%);
+        border-radius: 999px;
+        border: 1px solid var(--stroke);
+        background: rgba(255,255,255,.07);
+        backdrop-filter: blur(var(--blur));
+        -webkit-backdrop-filter: blur(var(--blur));
+        box-shadow: var(--shadow);
+        padding: 12px 14px;
+        display:flex;
+        gap: 10px;
+        align-items:center;
+      }
+      .search span{
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 12px;
+      }
+      .search input{
+        flex:1;
+        min-width:0;
+        border:none;
+        outline:none;
+        background:transparent;
+        color: var(--text);
+        font-size: 14px;
+      }
+      .chips{
+        width: min(680px, 100%);
+        display:grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+      }
+      .chip{
+        border-radius: 16px;
+        border: 1px solid var(--stroke);
+        background: rgba(255,255,255,.07);
+        padding: 12px 12px 11px;
+        cursor:pointer;
+        user-select:none;
+      }
+      .chip:hover{ border-color: rgba(255,255,255,.18); }
+      .chip b{ font-weight: 700; }
+      .chip small{
+        display:block;
+        margin-top: 6px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.35;
+      }
+      @media (max-width: 720px){
+        .chips{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="logo">
+        <div class="mark">A</div>
+        <div>
+          <div class="name">Aurora Browser</div>
+          <div class="sub">Быстрый, минималистичный, “стеклянный”. Нажмите Ctrl+L, чтобы вводить адрес.</div>
+        </div>
+      </div>
+
+      <div class="search">
+        <span>⌘</span>
+        <input id="q" placeholder="Поиск или адрес" autocomplete="off" spellcheck="false" />
+      </div>
+
+      <div class="chips" aria-label="Быстрые ссылки">
+        <div class="chip" data-url="https://www.google.com"><b>Google</b><small>Поиск</small></div>
+        <div class="chip" data-url="https://www.youtube.com"><b>YouTube</b><small>Видео</small></div>
+        <div class="chip" data-url="https://vk.com"><b>VK</b><small>Соцсеть</small></div>
+        <div class="chip" data-url="https://github.com"><b>GitHub</b><small>Код</small></div>
+        <div class="chip" data-url="https://mail.google.com"><b>Gmail</b><small>Почта</small></div>
+        <div class="chip" data-url="https://web.telegram.org"><b>Telegram</b><small>Чаты</small></div>
+        <div class="chip" data-url="https://translate.google.com"><b>Translate</b><small>Перевод</small></div>
+        <div class="chip" data-url="https://news.google.com"><b>News</b><small>Новости</small></div>
+      </div>
+    </div>
+
+    <script>
+      const q = document.getElementById("q");
+      q.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          // На home странице ввода навигация делегируется в верхнюю адресную строку,
+          // поэтому просто меняем location на внешнюю ссылку — Electron перехватит как навигацию вкладки.
+          const v = (q.value || "").trim();
+          if (!v) return;
+          if (/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(v)) location.href = v;
+          else if (v.includes(".")) location.href = "https://" + v;
+          else location.href = "https://www.google.com/search?q=" + encodeURIComponent(v);
+        }
+      });
+      document.querySelectorAll(".chip").forEach((el) => {
+        el.addEventListener("click", () => {
+          const url = el.getAttribute("data-url");
+          if (url) location.href = url;
+        });
+      });
+    </script>
+  </body>
+</html>
+
