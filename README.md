@@ -13,7 +13,7 @@ Desktop browser built with Electron, featuring a beautiful macOS-inspired UI wit
 
 ## Screenshots
 
-![Aurora Browser](screenshot.png)
+![Aurora Browser](1.png)
 
 ## Downloads
 
