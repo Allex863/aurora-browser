@@ -1,6 +1,6 @@
 # Aurora Browser
 
-Desktop browser built with Electron, featuring a beautiful macOS-inspired UI with dark theme support.
+Desktop browser built with Electron, featuring a beautiful macOS-inspired UI with dark theme support and stunning splash screen animation.
 
 [English](./README.md) | [Русский](./README.ru.md)
 
@@ -10,6 +10,7 @@ Desktop browser built with Electron, featuring a beautiful macOS-inspired UI wit
 - 🎨 **macOS Style UI** - Modern design with tabs, address bar, and navigation
 - ⚡ **Fast & Lightweight** - Built on Electron for cross-platform compatibility
 - 🔒 **Secure** - Sandboxed web views with standard browser security
+- ✨ **Beautiful Splash Screen** - Stunning startup animation with gradient rings and particles
 
 ## Screenshots
 

@@ -139,6 +139,43 @@ function resolveInternalUrl(url) {
   return url;
 }
 
+/** @type {BrowserWindow | null} */
+let splashWindow = null;
+
+function createSplashWindow() {
+  splashWindow = new BrowserWindow({
+    width: 450,
+    height: 550,
+    frame: false,
+    transparent: true,
+    backgroundColor: "#0b0e1400",
+    alwaysOnTop: true,
+    resizable: false,
+    movable: false,
+    minimizable: false,
+    maximizable: false,
+    closable: false,
+    skipTaskbar: true,
+    webPreferences: {
+      contextIsolation: true,
+      nodeIntegration: false,
+      sandbox: true
+    }
+  });
+
+  const splashPath = path.join(__dirname, "splash.html");
+  splashWindow.loadFile(splashPath);
+
+  return splashWindow;
+}
+
+function closeSplashWindow() {
+  if (splashWindow) {
+    splashWindow.close();
+    splashWindow = null;
+  }
+}
+
 function ensureWindow() {
   if (win) return win;
 
@@ -150,6 +187,7 @@ function ensureWindow() {
     backgroundColor: "#0b0e14",
     titleBarStyle: "hidden",
     trafficLightPosition: { x: 18, y: 16 },
+    show: false,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       contextIsolation: true,
@@ -325,7 +363,22 @@ function resizeActiveView() {
 
 app.whenReady().then(() => {
   loadSettings();
+  
+  // Создаём splash screen
+  createSplashWindow();
+  
+  // Создаём основное окно (скрытое)
   ensureWindow();
+  
+  // Показываем основное окно после загрузки
+  win?.once('ready-to-show', () => {
+    // Закрываем splash через 2.8 секунды (чуть дольше анимации)
+    setTimeout(() => {
+      closeSplashWindow();
+      win?.show();
+      win?.focus();
+    }, 2800);
+  });
 
   // Downloads (единый менеджер для всех вкладок)
   session.defaultSession.on("will-download", (_event, item, webContents) => {
@@ -565,4 +618,9 @@ ipcMain.handle("downloads:open", (_e, { path: filePath }) => {
   if (!filePath) return { ok: false };
   shell.openPath(filePath).catch(() => {});
   return { ok: true };
+});
+
+// Обработчик готовности splash screen
+ipcMain.on("splash:ready", () => {
+  // Splash готов, но мы всё равно ждём таймер в app.whenReady()
 });

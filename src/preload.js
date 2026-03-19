@@ -49,3 +49,8 @@ contextBridge.exposeInMainWorld("browserAPI", {
   }
 });
 
+// API для splash screen
+contextBridge.exposeInMainWorld("electronAPI", {
+  splashReady: () => ipcRenderer.send("splash:ready")
+});
+
