@@ -371,7 +371,7 @@ app.whenReady().then(() => {
   // Создаём splash screen
   createSplashWindow();
 
-  // Создаём основное окно (скрытое)
+  // Создаём основное окно (скрытое, пока splash активен)
   ensureWindow();
 
   // Обработчик готовности splash
@@ -379,12 +379,16 @@ app.whenReady().then(() => {
     // Ждём завершения анимации fade-out и закрываем splash
     setTimeout(() => {
       closeSplashWindow();
-      // Показываем основное окно
+      // Показываем основное окно на переднем плане
       if (win) {
+        win.setAlwaysOnTop(true, 'screen-saver');
         win.show();
         win.focus();
+        win.setAlwaysOnTop(false, 'normal');
+        win.setAlwaysOnTop(true, 'floating');
+        win.setAlwaysOnTop(false, 'normal');
       }
-    }, 600);
+    }, 500);
   });
 
   // Downloads (единый менеджер для всех вкладок)
