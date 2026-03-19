@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#0b0e14" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <title>Aurora Browser Mobile</title>
+    <link rel="stylesheet" href="./mobile-styles.css" />
+  </head>
+  <body>
+    <div class="app" data-theme="dark">
+      <!-- Верхняя панель с адресной строкой -->
+      <header class="top-bar" role="banner">
+        <div class="top-bar__left">
+          <button class="icon-btn" id="backBtn" type="button" aria-label="Назад" title="Назад">
+            <span aria-hidden="true">←</span>
+          </button>
+          <button class="icon-btn" id="forwardBtn" type="button" aria-label="Вперёд" title="Вперёд">
+            <span aria-hidden="true">→</span>
+          </button>
+        </div>
+
+        <form class="omnibox" id="omniboxForm" autocomplete="off" aria-label="Адресная строка">
+          <span class="omnibox__icon" aria-hidden="true">🔒</span>
+          <input
+            id="urlInput"
+            name="url"
+            type="text"
+            inputmode="url"
+            spellcheck="false"
+            aria-label="Введите адрес или запрос"
+            placeholder="Введите адрес или запрос"
+          />
+        </form>
+
+        <div class="top-bar__right">
+          <button class="icon-btn" id="reloadBtn" type="button" aria-label="Обновить" title="Обновить">
+            <span aria-hidden="true">↻</span>
+          </button>
+          <button class="icon-btn" id="menuBtn" type="button" aria-label="Меню" title="Меню">
+            <span aria-hidden="true">⋮</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Панель вкладок -->
+      <section class="tabs-bar" aria-label="Вкладки">
+        <div class="tabs__strip" id="tabsStrip" role="tablist" aria-label="Список вкладок"></div>
+        <button class="new-tab-btn" id="newTabBtn" type="button" aria-label="Новая вкладка">
+          <span aria-hidden="true">＋</span>
+        </button>
+      </section>
+
+      <!-- Основной контент - WebView -->
+      <main class="content" role="main">
+        <div class="viewport" id="viewport">
+          <iframe id="webView" class="webview" sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-modals"></iframe>
+          
+          <!-- Оверлей для ошибок/загрузки -->
+          <div class="viewport__overlay" id="overlay">
+            <div class="overlay-card">
+              <div class="overlay-title">Загрузка…</div>
+              <div class="overlay-text" id="overlayText">Открываем страницу</div>
+              <div class="overlay-actions">
+                <button class="primary" id="openExternalBtn" type="button">Открыть в браузере</button>
+                <button class="ghost" id="copyLinkBtn" type="button">Скопировать ссылку</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Нижняя навигационная панель -->
+      <nav class="bottom-nav" role="navigation" aria-label="Нижняя навигация">
+        <button class="bottom-nav__item" id="homeBtn" type="button" aria-label="Домой">
+          <span class="bottom-nav__icon" aria-hidden="true">⌂</span>
+          <span class="bottom-nav__label">Домой</span>
+        </button>
+        <button class="bottom-nav__item" id="bookmarksBtn" type="button" aria-label="Закладки">
+          <span class="bottom-nav__icon" aria-hidden="true">★</span>
+          <span class="bottom-nav__label">Закладки</span>
+        </button>
+        <button class="bottom-nav__item" id="downloadsBtn" type="button" aria-label="Загрузки">
+          <span class="bottom-nav__icon" aria-hidden="true">↓</span>
+          <span class="bottom-nav__label">Загрузки</span>
+        </button>
+        <button class="bottom-nav__item" id="settingsBtn" type="button" aria-label="Настройки">
+          <span class="bottom-nav__icon" aria-hidden="true">⚙</span>
+          <span class="bottom-nav__label">Настройки</span>
+        </button>
+      </nav>
+
+      <!-- Модальное окно меню -->
+      <div class="modal" id="menuModal" aria-hidden="true">
+        <div class="modal__backdrop"></div>
+        <div class="menu-modal__card" role="dialog" aria-modal="true" aria-label="Меню">
+          <div class="menu-modal__header">
+            <div class="menu-modal__title">Меню</div>
+            <button class="icon-btn close-btn" id="menuCloseBtn" type="button" aria-label="Закрыть">
+              <span aria-hidden="true">✕</span>
+            </button>
+          </div>
+          <div class="menu-modal__list">
+            <button class="menu-item" id="themeBtn" type="button">
+              <span class="menu-item__icon" aria-hidden="true">☼</span>
+              <span class="menu-item__label">Тема</span>
+            </button>
+            <button class="menu-item" id="historyBtn" type="button">
+              <span class="menu-item__icon" aria-hidden="true">🕐</span>
+              <span class="menu-item__label">История</span>
+            </button>
+            <button class="menu-item" id="shareBtn" type="button">
+              <span class="menu-item__icon" aria-hidden="true">📤</span>
+              <span class="menu-item__label">Поделиться</span>
+            </button>
+            <button class="menu-item" id="addToHomeBtn" type="button">
+              <span class="menu-item__icon" aria-hidden="true">📱</span>
+              <span class="menu-item__label">На главный экран</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Модальное окно загрузок -->
+      <div class="modal" id="downloadsModal" aria-hidden="true">
+        <div class="modal__backdrop"></div>
+        <div class="modal__card" role="dialog" aria-modal="true" aria-label="Менеджер загрузок">
+          <div class="modal__header">
+            <div class="modal__title">Загрузки</div>
+            <button class="icon-btn close-btn" id="downloadsCloseBtn" type="button" aria-label="Закрыть">
+              <span aria-hidden="true">✕</span>
+            </button>
+          </div>
+          <div class="dl-list" id="downloadsList" aria-label="Список загрузок"></div>
+        </div>
+      </div>
+
+      <!-- Модальное окно настроек -->
+      <div class="modal" id="settingsModal" aria-hidden="true">
+        <div class="modal__backdrop"></div>
+        <div class="modal__card" role="dialog" aria-modal="true" aria-label="Настройки браузера">
+          <div class="modal__header">
+            <div class="modal__title">Настройки</div>
+            <button class="icon-btn close-btn" id="settingsCloseBtn" type="button" aria-label="Закрыть">
+              <span aria-hidden="true">✕</span>
+            </button>
+          </div>
+          <div class="modal__grid">
+            <label class="field">
+              <div class="field__label">Домашняя страница</div>
+              <input class="field__input" id="homeInput" type="text" spellcheck="false" placeholder="about:blank" />
+            </label>
+
+            <label class="field">
+              <div class="field__label">Поисковик</div>
+              <select class="field__input" id="searchSelect">
+                <option value="google">Google</option>
+                <option value="yandex">Yandex</option>
+                <option value="bing">Bing</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <div class="field__label">Блокировка рекламы</div>
+              <div class="toggle">
+                <input id="adBlockToggle" type="checkbox" />
+                <span>Включить</span>
+              </div>
+            </label>
+
+            <label class="field">
+              <div class="field__label">Ночной режим</div>
+              <div class="toggle">
+                <input id="nightModeToggle" type="checkbox" />
+                <span>Включить</span>
+              </div>
+            </label>
+          </div>
+
+          <div class="modal__actions">
+            <button class="primary full-width" id="settingsSaveBtn" type="button">Сохранить</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Модальное окно истории -->
+      <div class="modal" id="historyModal" aria-hidden="true">
+        <div class="modal__backdrop"></div>
+        <div class="modal__card" role="dialog" aria-modal="true" aria-label="История">
+          <div class="modal__header">
+            <div class="modal__title">История</div>
+            <button class="icon-btn close-btn" id="historyCloseBtn" type="button" aria-label="Закрыть">
+              <span aria-hidden="true">✕</span>
+            </button>
+          </div>
+          <div class="dl-list" id="historyList" aria-label="Список истории"></div>
+          <div class="modal__actions">
+            <button class="ghost" id="historyClearBtn" type="button">Очистить</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="./mobile-app.js"></script>
+  </body>
+</html>

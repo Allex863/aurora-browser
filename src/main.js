@@ -367,21 +367,24 @@ function resizeActiveView() {
 
 app.whenReady().then(() => {
   loadSettings();
-  
+
   // Создаём splash screen
   createSplashWindow();
-  
+
   // Создаём основное окно (скрытое)
   ensureWindow();
-  
-  // Показываем основное окно после загрузки
-  win?.once('ready-to-show', () => {
-    // Закрываем splash через 2.8 секунды (чуть дольше анимации)
+
+  // Обработчик готовности splash
+  ipcMain.once('splash:ready', () => {
+    // Ждём завершения анимации fade-out и закрываем splash
     setTimeout(() => {
       closeSplashWindow();
-      win?.show();
-      win?.focus();
-    }, 2800);
+      // Показываем основное окно
+      if (win) {
+        win.show();
+        win.focus();
+      }
+    }, 600);
   });
 
   // Downloads (единый менеджер для всех вкладок)
