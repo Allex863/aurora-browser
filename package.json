@@ -1,6 +1,6 @@
 {
   "name": "aurora-browser",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Aurora Browser — desktop browser in macOS style with dark theme support",
   "main": "src/main.js",
   "author": "Allex863",

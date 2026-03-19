@@ -376,19 +376,19 @@ app.whenReady().then(() => {
 
   // Обработчик готовности splash
   ipcMain.once('splash:ready', () => {
-    // Ждём завершения анимации fade-out и закрываем splash
-    setTimeout(() => {
-      closeSplashWindow();
-      // Показываем основное окно на переднем плане
-      if (win) {
-        win.setAlwaysOnTop(true, 'screen-saver');
-        win.show();
-        win.focus();
+    // Закрываем splash и сразу показываем основное окно
+    closeSplashWindow();
+    
+    // Показываем основное окно на переднем плане
+    if (win) {
+      win.showInactive();
+      win.show();
+      win.focus();
+      win.setAlwaysOnTop(true, 'screen-saver');
+      setTimeout(() => {
         win.setAlwaysOnTop(false, 'normal');
-        win.setAlwaysOnTop(true, 'floating');
-        win.setAlwaysOnTop(false, 'normal');
-      }
-    }, 500);
+      }, 100);
+    }
   });
 
   // Downloads (единый менеджер для всех вкладок)
