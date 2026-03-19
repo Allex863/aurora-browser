@@ -147,8 +147,8 @@ function createSplashWindow() {
     width: 450,
     height: 550,
     frame: false,
-    transparent: true,
-    backgroundColor: "#0b0e1400",
+    transparent: false,
+    backgroundColor: "#0d1117",
     alwaysOnTop: true,
     resizable: false,
     movable: false,
@@ -165,6 +165,7 @@ function createSplashWindow() {
 
   const splashPath = path.join(__dirname, "splash.html");
   splashWindow.loadFile(splashPath);
+  splashWindow.show();
 
   return splashWindow;
 }
