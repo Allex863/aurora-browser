@@ -139,44 +139,6 @@ function resolveInternalUrl(url) {
   return url;
 }
 
-/** @type {BrowserWindow | null} */
-let splashWindow = null;
-
-function createSplashWindow() {
-  splashWindow = new BrowserWindow({
-    width: 450,
-    height: 550,
-    frame: false,
-    transparent: false,
-    backgroundColor: "#0d1117",
-    alwaysOnTop: true,
-    resizable: false,
-    movable: false,
-    minimizable: false,
-    maximizable: false,
-    closable: false,
-    skipTaskbar: true,
-    webPreferences: {
-      contextIsolation: true,
-      nodeIntegration: false,
-      sandbox: true
-    }
-  });
-
-  const splashPath = path.join(__dirname, "splash.html");
-  splashWindow.loadFile(splashPath);
-  splashWindow.show();
-
-  return splashWindow;
-}
-
-function closeSplashWindow() {
-  if (splashWindow) {
-    splashWindow.close();
-    splashWindow = null;
-  }
-}
-
 function ensureWindow() {
   if (win) return win;
 
@@ -192,6 +154,7 @@ function ensureWindow() {
     trafficLightPosition: { x: 18, y: 16 },
     icon: iconPath,
     show: false,
+    opacity: 0,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       contextIsolation: true,
@@ -212,6 +175,21 @@ function ensureWindow() {
 
   const rendererPath = path.join(__dirname, "renderer", "index.html");
   win.loadFile(rendererPath);
+
+  // Плавное появление окна после загрузки
+  win.once('ready-to-show', () => {
+    win.show();
+    // Плавная анимация появления
+    let opacity = 0;
+    const fadeIn = setInterval(() => {
+      opacity += 0.05;
+      if (opacity >= 1) {
+        opacity = 1;
+        clearInterval(fadeIn);
+      }
+      win.setOpacity(opacity);
+    }, 30);
+  });
 
   return win;
 }
@@ -368,28 +346,8 @@ function resizeActiveView() {
 app.whenReady().then(() => {
   loadSettings();
 
-  // Создаём splash screen
-  createSplashWindow();
-
-  // Создаём основное окно (скрытое, пока splash активен)
+  // Создаём основное окно с плавным появлением
   ensureWindow();
-
-  // Обработчик готовности splash
-  ipcMain.once('splash:ready', () => {
-    // Закрываем splash и сразу показываем основное окно
-    closeSplashWindow();
-    
-    // Показываем основное окно на переднем плане
-    if (win) {
-      win.showInactive();
-      win.show();
-      win.focus();
-      win.setAlwaysOnTop(true, 'screen-saver');
-      setTimeout(() => {
-        win.setAlwaysOnTop(false, 'normal');
-      }, 100);
-    }
-  });
 
   // Downloads (единый менеджер для всех вкладок)
   session.defaultSession.on("will-download", (_event, item, webContents) => {
@@ -629,9 +587,4 @@ ipcMain.handle("downloads:open", (_e, { path: filePath }) => {
   if (!filePath) return { ok: false };
   shell.openPath(filePath).catch(() => {});
   return { ok: true };
-});
-
-// Обработчик готовности splash screen
-ipcMain.on("splash:ready", () => {
-  // Splash готов, но мы всё равно ждём таймер в app.whenReady()
 });
