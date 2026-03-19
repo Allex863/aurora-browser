@@ -1,0 +1,81 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Градиент для фона -->
+    <radialGradient id="bgGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#1a1f2e"/>
+      <stop offset="100%" style="stop-color:#0a0b10"/>
+    </radialGradient>
+    
+    <!-- Градиент для сферы -->
+    <radialGradient id="sphereGradient" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" style="stop-color:#4db8ff"/>
+      <stop offset="40%" style="stop-color:#0a84ff"/>
+      <stop offset="70%" style="stop-color:#0056b3"/>
+      <stop offset="100%" style="stop-color:#002d66"/>
+    </radialGradient>
+    
+    <!-- Градиент для восходящего солнца -->
+    <linearGradient id="sunGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#00ff88"/>
+      <stop offset="50%" style="stop-color:#00d4ff"/>
+      <stop offset="100%" style="stop-color:#0a84ff"/>
+    </linearGradient>
+    
+    <!-- Свечение -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Фон -->
+  <rect width="512" height="512" rx="100" fill="url(#bgGradient)"/>
+  
+  <!-- Орбиты -->
+  <ellipse cx="256" cy="256" rx="180" ry="180" 
+           fill="none" stroke="rgba(0, 212, 255, 0.3)" stroke-width="2"
+           transform="rotate(-30 256 256)"/>
+  <ellipse cx="256" cy="256" rx="210" ry="210" 
+           fill="none" stroke="rgba(0, 255, 136, 0.2)" stroke-width="2"
+           transform="rotate(30 256 256)"/>
+  
+  <!-- Основная сфера -->
+  <circle cx="256" cy="256" r="100" fill="url(#sphereGradient)" filter="url(#glow)">
+    <animate attributeName="r" values="100;105;100" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Восходящее солнце/аврора внутри -->
+  <path d="M 256 196 
+           A 60 60 0 0 1 316 256 
+           A 60 60 0 0 1 256 316 
+           A 60 60 0 0 1 196 256 
+           A 60 60 0 0 1 256 196 Z" 
+        fill="url(#sunGradient)" opacity="0.8" filter="url(#glow)"/>
+  
+  <!-- Лучи света -->
+  <g stroke="url(#sunGradient)" stroke-width="3" opacity="0.6" filter="url(#glow)">
+    <line x1="256" y1="140" x2="256" y2="170"/>
+    <line x1="256" y1="342" x2="256" y2="372"/>
+    <line x1="140" y1="256" x2="170" y2="256"/>
+    <line x1="342" y1="256" x2="372" y2="256"/>
+    <line x1="181" y1="181" x2="202" y2="202"/>
+    <line x1="310" y1="310" x2="331" y2="331"/>
+    <line x1="181" y1="331" x2="202" y2="310"/>
+    <line x1="310" y1="202" x2="331" y2="181"/>
+  </g>
+  
+  <!-- Звёзды -->
+  <g fill="#ffffff" opacity="0.8">
+    <circle cx="120" cy="100" r="2"/>
+    <circle cx="380" cy="120" r="1.5"/>
+    <circle cx="400" cy="350" r="2"/>
+    <circle cx="100" cy="380" r="1.5"/>
+    <circle cx="420" cy="200" r="1"/>
+    <circle cx="80" cy="250" r="1.5"/>
+    <circle cx="350" cy="80" r="1"/>
+    <circle cx="200" cy="420" r="1.5"/>
+  </g>
+</svg>

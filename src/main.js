@@ -179,6 +179,8 @@ function closeSplashWindow() {
 function ensureWindow() {
   if (win) return win;
 
+  const iconPath = path.join(__dirname, "..", "assets", "icon-512.png");
+
   win = new BrowserWindow({
     width: 1180,
     height: 820,
@@ -187,6 +189,7 @@ function ensureWindow() {
     backgroundColor: "#0b0e14",
     titleBarStyle: "hidden",
     trafficLightPosition: { x: 18, y: 16 },
+    icon: iconPath,
     show: false,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),

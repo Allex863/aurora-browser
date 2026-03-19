@@ -19,12 +19,14 @@
   },
   "devDependencies": {
     "electron": "^32.2.1",
-    "electron-builder": "^24.13.3"
+    "electron-builder": "^24.13.3",
+    "sharp": "^0.34.5"
   },
   "build": {
     "appId": "com.aurora.browser",
     "productName": "Aurora Browser",
     "artifactName": "${productName}-${version}-${arch}.${ext}",
+    "icon": "assets/icon-512.png",
     "files": [
       "src/**/*",
       "package.json"
